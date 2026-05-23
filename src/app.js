@@ -24,7 +24,7 @@ app.use(
     limit: 100,
     standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: (req) => req.ip || req.headers['x-forwarded-for'] || 'unknown',
+    skip: (req) => req.path === '/health',
   }),
 );
 app.use(morgan('dev'));

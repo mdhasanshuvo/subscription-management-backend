@@ -20,17 +20,26 @@ module.exports = async function vercelHandler(req, res) {
 
   // Serve Swagger spec directly without middleware delay
   if (requestPath === '/api/swagger-spec.json') {
-    const host = req.headers.host || 'localhost:5000';
-    const swaggerSpec = getSwaggerSpec(host);
-    return res.status(200).set('Content-Type', 'application/json').json(swaggerSpec);
+    try {
+      const host = req.headers.host || 'localhost:5000';
+      const swaggerSpec = getSwaggerSpec(host);
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(swaggerSpec));
+      return;
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Failed to generate swagger spec' }));
+      return;
+    }
   }
 
   // Serve Swagger UI directly without middleware delay
   if (requestPath === '/api-docs' || requestPath === '/api-docs/') {
-    const host = req.headers.host || 'localhost:5000';
-    const protocol = host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https';
-    const specUrl = `${protocol}://${host}/api/swagger-spec.json`;
-    const html = `<!DOCTYPE html>
+    try {
+      const host = req.headers.host || 'localhost:5000';
+      const protocol = host.includes('localhost') || host.includes('127.0.0.1') ? 'http' : 'https';
+      const specUrl = `${protocol}://${host}/api/swagger-spec.json`;
+      const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -48,7 +57,7 @@ module.exports = async function vercelHandler(req, res) {
   <script>
     window.onload = function () {
       window.ui = SwaggerUIBundle({
-        url: ${JSON.stringify(specUrl)},
+        url: '${specUrl}',
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [SwaggerUIBundle.presets.apis],
@@ -58,7 +67,14 @@ module.exports = async function vercelHandler(req, res) {
   <\/script>
 </body>
 </html>`;
-    return res.status(200).set('Content-Type', 'text/html').send(html);
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(html);
+      return;
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('Failed to generate docs page');
+      return;
+    }
   }
 
   // Only routes that actually touch MongoDB should establish a DB connection.
