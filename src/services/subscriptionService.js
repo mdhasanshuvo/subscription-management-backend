@@ -35,11 +35,11 @@ async function purchaseSubscription({ userId, planId, autoRenew = false }) {
 
   const activeSubscription = await Subscription.findOne({ user: userId, status: 'Active' });
   if (activeSubscription && String(activeSubscription.plan) === String(plan._id)) {
-    throw new ApiError(400, 'You already have an active subscription for this plan.');
+    throw new ApiError(409, 'You already have an active subscription for this plan.');
   }
 
   if (activeSubscription) {
-    throw new ApiError(400, 'You already have an active subscription. Use upgrade or downgrade instead.');
+    throw new ApiError(409, 'You already have an active subscription. Use upgrade or downgrade instead.');
   }
 
   const subscription = await Subscription.create({
@@ -157,6 +157,7 @@ async function cancelSubscription({ userId }) {
   }
 
   currentSubscription.status = 'Cancelled';
+  currentSubscription.autoRenew = false;
   await currentSubscription.save();
 
   await logEvent({
