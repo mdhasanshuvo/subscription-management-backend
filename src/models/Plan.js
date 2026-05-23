@@ -6,7 +6,6 @@ const planSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Plan name is required'],
       trim: true,
-      unique: true,
       maxlength: [120, 'Plan name cannot exceed 120 characters'],
     },
     price: {
@@ -33,7 +32,7 @@ const planSchema = new mongoose.Schema(
   }
 );
 
-planSchema.index({ planName: 1 }, { unique: true });
 planSchema.index({ activeStatus: 1, price: 1 });
+planSchema.index({ planName: 1 }, { unique: true });
 
 module.exports = mongoose.model('Plan', planSchema);
