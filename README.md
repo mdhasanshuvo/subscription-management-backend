@@ -125,6 +125,20 @@ Content-Type: application/json
 }
 ```
 
+The webhook secret is checked before the payload reaches the subscription service.
+
+## Admin Analytics Output
+
+The admin dashboard now returns:
+
+- total users
+- total active subscriptions
+- total revenue
+- subscriptions by plan
+- subscriptions by status
+- revenue by plan
+- expired subscriptions count
+
 ## Deployment
 
 The project is configured for Vercel using `vercel.json` and `api/index.js`.
