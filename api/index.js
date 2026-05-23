@@ -5,12 +5,9 @@ const connectDatabase = require('../src/config/database');
 const handler = serverless(app);
 
 module.exports = async function vercelHandler(req, res) {
-  const requestPathRaw = req.url || req.path || '';
-  const requestPath = requestPathRaw.startsWith('http')
-    ? new URL(requestPathRaw).pathname
-    : requestPathRaw.split('?')[0];
+  const requestPath = `${req.url || ''} ${req.path || ''} ${req.originalUrl || ''}`;
 
-  if (requestPath.startsWith('/health')) {
+  if (requestPath.includes('/health')) {
     return res.status(200).json({
       success: true,
       message: 'Server is healthy',
@@ -20,7 +17,9 @@ module.exports = async function vercelHandler(req, res) {
     });
   }
 
-  if (!requestPath.startsWith('/api-docs') && !requestPath.startsWith('/api/swagger-spec.json')) {
+  const isSwaggerRequest = requestPath.includes('/api-docs') || requestPath.includes('/api/swagger-spec.json');
+
+  if (!isSwaggerRequest) {
     await connectDatabase();
   }
 
