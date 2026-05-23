@@ -1,19 +1,22 @@
 const { deploymentUrl, appName } = require('../config/env');
 
-const serverUrl = deploymentUrl || 'http://localhost:5000';
+const getSwaggerSpec = (host) => {
+  // Detect if running on localhost
+  const isLocalhost = host && (host.includes('localhost') || host.includes('127.0.0.1'));
+  const serverUrl = isLocalhost ? `http://${host}` : (deploymentUrl || 'http://localhost:5000');
 
-module.exports = {
-  openapi: '3.0.3',
-  info: {
-    title: appName,
-    version: '1.0.0',
-    description: 'Subscription and billing backend API for SaaS-style subscription management.',
-  },
-  servers: [
-    {
-      url: serverUrl,
+  return {
+    openapi: '3.0.3',
+    info: {
+      title: appName,
+      version: '1.0.0',
+      description: 'Subscription and billing backend API for SaaS-style subscription management.',
     },
-  ],
+    servers: [
+      {
+        url: serverUrl,
+      },
+    ],
   components: {
     securitySchemes: {
       bearerAuth: {
@@ -264,4 +267,7 @@ module.exports = {
       },
     },
   },
+  };
 };
+
+module.exports = getSwaggerSpec;
