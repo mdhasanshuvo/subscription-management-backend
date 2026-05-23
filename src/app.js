@@ -21,17 +21,17 @@ app.use(morgan('dev'));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Dynamic Swagger setup based on request host
 app.use('/api-docs', swaggerUi.serve);
-app.get('/api-docs', (req, res) => {
-  const host = req.get('host');
-  const swaggerSpec = getSwaggerSpec(host);
-  res.send(swaggerUi.generateHTML(swaggerSpec));
-});
-app.use('/api-docs/swagger.json', (req, res) => {
+app.get('/api-docs/swagger-spec.json', (req, res) => {
   const host = req.get('host');
   const swaggerSpec = getSwaggerSpec(host);
   res.json(swaggerSpec);
+});
+app.get('/api-docs', (req, res) => {
+  const host = req.get('host');
+  const swaggerSpec = getSwaggerSpec(host);
+  const html = swaggerUi.generateHTML(swaggerSpec);
+  res.send(html);
 });
 app.use('/', routes);
 
