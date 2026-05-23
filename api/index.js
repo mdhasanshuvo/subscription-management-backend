@@ -17,7 +17,7 @@ module.exports = async function vercelHandler(req, res) {
     });
   }
 
-  if (!requestPath.startsWith('/api-docs')) {
+  if (!requestPath.startsWith('/api-docs') && !requestPath.startsWith('/api/swagger-spec.json')) {
     await connectDatabase();
   }
 

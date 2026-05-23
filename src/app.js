@@ -21,17 +21,19 @@ app.use(morgan('dev'));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api-docs', swaggerUi.serve);
-app.get('/api-docs/swagger-spec.json', (req, res) => {
-  const host = req.get('host');
+// Dynamic Swagger API endpoint
+app.get('/api/swagger-spec.json', (req, res) => {
+  const host = req.get('host') || 'localhost:5000';
   const swaggerSpec = getSwaggerSpec(host);
   res.json(swaggerSpec);
 });
+
+// Swagger UI endpoint
 app.get('/api-docs', (req, res) => {
-  const host = req.get('host');
+  const host = req.get('host') || 'localhost:5000';
   const swaggerSpec = getSwaggerSpec(host);
-  const html = swaggerUi.generateHTML(swaggerSpec);
-  res.send(html);
+  res.set('Content-Type', 'text/html');
+  res.send(swaggerUi.generateHTML(swaggerSpec, { swaggerUrl: '/api/swagger-spec.json' }));
 });
 app.use('/', routes);
 
