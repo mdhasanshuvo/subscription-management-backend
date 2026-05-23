@@ -5,7 +5,7 @@ const connectDatabase = require('../src/config/database');
 const handler = serverless(app);
 
 module.exports = async function vercelHandler(req, res) {
-  const requestPath = `${req.url || ''} ${req.path || ''} ${req.originalUrl || ''}`;
+  const requestPath = req.url || '';
 
   if (requestPath.includes('/health')) {
     return res.status(200).json({
