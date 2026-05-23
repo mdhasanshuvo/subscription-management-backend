@@ -29,7 +29,14 @@ app.get('/api/swagger-spec.json', (req, res) => {
 });
 
 // Swagger UI endpoint
+app.use('/api-docs', swaggerUi.serve);
 app.get('/api-docs', (req, res) => {
+  const host = req.get('host') || 'localhost:5000';
+  const swaggerSpec = getSwaggerSpec(host);
+  res.set('Content-Type', 'text/html');
+  res.send(swaggerUi.generateHTML(swaggerSpec, { swaggerUrl: '/api/swagger-spec.json' }));
+});
+app.get('/api-docs/', (req, res) => {
   const host = req.get('host') || 'localhost:5000';
   const swaggerSpec = getSwaggerSpec(host);
   res.set('Content-Type', 'text/html');
