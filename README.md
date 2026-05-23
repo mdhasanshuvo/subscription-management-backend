@@ -143,7 +143,7 @@ The admin dashboard now returns:
 
 The project is configured for Vercel using `vercel.json` and `api/index.js`.
 
-Deployment URL: `https://your-vercel-deployment-url.vercel.app`
+Deployment URL: `https://subscription-management-backend.vercel.app`
 
 ## Postman Collection
 
