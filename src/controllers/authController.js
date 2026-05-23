@@ -15,7 +15,7 @@ const login = asyncHandler(async (req, res) => {
 const me = asyncHandler(async (req, res) => {
   return res.status(200).json(
     successResponse('Current user fetched successfully', {
-      id: req.user._id,
+      id: String(req.user._id),
       name: req.user.name,
       email: req.user.email,
       role: req.user.role,
